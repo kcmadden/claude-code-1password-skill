@@ -12,6 +12,28 @@ description: >
 
 # 1Password Skill
 
+## ⚠️ Critical: Never Type Secrets Into Claude Code
+
+**Claude Code can see everything typed in its terminal and chat.**
+
+When a user needs to store a secret, ALWAYS use the Terminal launch pattern:
+1. Generate a pre-filled script with known values already set
+2. Use `launch-in-terminal.sh` to open it in Terminal.app
+3. User types secrets in that window — Claude Code cannot see it
+4. 1Password stores the secret, outputs `op://` references back to Claude
+
+```bash
+# Claude generates the script, then launches it outside its own view:
+bash scripts/launch-in-terminal.sh /tmp/setup-my-service.sh "Service Name Setup"
+```
+
+Never ask users to paste API keys, passwords, or tokens into:
+- The Claude Code chat
+- A Bash tool call visible in Claude Code
+- Any file Claude Code writes before it's stored in 1Password
+
+---
+
 ## Setup Check
 
 Always verify the CLI is ready before any operation:
@@ -21,7 +43,39 @@ bash scripts/check_setup.sh
 ```
 
 If not installed: https://developer.1password.com/docs/cli/get-started/
-If not signed in: `op signin`
+If not signed in: unlock the **1Password desktop app** (after Mac restart, the app must be unlocked before the CLI works)
+
+---
+
+## Storing Secrets: The Terminal Launch Pattern
+
+When a user needs to store a new secret or credential:
+
+**Step 1 — Generate the script** (Claude does this, with known values pre-filled):
+
+```bash
+cat > /tmp/setup-SERVICE.sh << 'EOF'
+bash /path/to/store-mcp-credentials.sh \
+  --vault Dev \
+  --item "Service Name" \
+  --set "url=https://known-url.com" \
+  --set "env=production" \
+  --secret "api_key" \
+  --secret "webhook_secret"
+EOF
+```
+
+**Step 2 — Launch in Terminal.app** (secrets stay out of Claude Code):
+
+```bash
+bash scripts/launch-in-terminal.sh /tmp/setup-SERVICE.sh "Service Name Setup"
+```
+
+**Step 3 — Update config** (Claude uses the `op://` references from the output):
+
+```json
+"SERVICE_API_KEY": "op://Dev/Service Name/api_key"
+```
 
 ---
 

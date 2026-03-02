@@ -78,7 +78,11 @@ bash scripts/env_from_op.sh --item "Project Credentials" --resolve --output .env
 
 ## Secret References (op://)
 
-The safest pattern — store `op://` references in config files instead of real values:
+The safest pattern — store `op://` references in config files instead of real values.
+
+> **Privacy note:** `op://` references reveal vault names, item names, and field names.
+> Safe to commit to **private repos**. For public repos, check that your vault/item naming
+> doesn't expose sensitive structure (client names, internal service names, etc.).
 
 ```
 op://VaultName/ItemTitle/field_name
@@ -149,8 +153,8 @@ Grant vault access only to what the service needs.
 ## Security Rules
 
 1. **Never hardcode secrets** — always use `op://` references or runtime injection
-2. **Commit `.env.tpl`** (references only), **never commit `.env`** (real values)
-3. **Add `.env` to `.gitignore`** — always
+2. **Commit `.env.tpl`** to private repos only — it exposes vault/item structure, not values
+3. **Never commit `.env`** (real values) — add it to `.gitignore` immediately: `echo ".env" >> .gitignore`
 4. **Use vaults to scope access** — separate vault per project or team
 5. **Rotate on exposure** — use `store_secret.sh --update` then re-inject everywhere
 6. **Service accounts for CI/CD** — never use personal account tokens in automation

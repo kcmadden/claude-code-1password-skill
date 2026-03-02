@@ -31,7 +31,13 @@ op run --env-file=.env.tpl -- your-command
 
 ## .env Template Files
 
-Store references in a `.env.tpl` file (safe to commit):
+Store references in a `.env.tpl` file (safe to commit to **private** repos):
+
+> **Privacy note:** `.env.tpl` contains your vault names, item names, and field names —
+> e.g. `op://Dev/Anthropic/api_key`. This reveals the structure of your 1Password vault
+> to anyone who can read the file. For **private repos**, this is fine. For **public repos**,
+> consider whether your vault/item naming reveals anything sensitive (client names, internal
+> service names, etc.). Real secret values are never exposed — only the structure.
 
 ```bash
 # .env.tpl — commit this

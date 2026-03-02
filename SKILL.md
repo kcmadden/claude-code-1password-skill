@@ -90,9 +90,11 @@ ANTHROPIC_API_KEY=op://Dev/Anthropic/api_key
 N8N_API_KEY=op://Dev/n8n/api_key
 SUPABASE_SERVICE_KEY=op://Dev/Supabase/service_key
 
-# Inject at runtime (secrets never touch disk)
+# ✅ Inject at runtime — secrets stay in subprocess, never in shell history
 op run --env-file=.env.tpl -- your-command
-source <(op run --env-file=.env.tpl -- env)
+
+# ⚠️  Avoid sourcing into current shell — unsafe if values contain $(...) or backticks
+# source <(op run --env-file=.env.tpl -- env)   ← skip this pattern
 ```
 
 For full syntax and edge cases: [references/secret_references.md](references/secret_references.md)

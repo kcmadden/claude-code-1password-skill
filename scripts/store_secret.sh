@@ -50,10 +50,9 @@ if [[ -n "$FROM_ENV" ]]; then
   echo "Using value from \$$FROM_ENV"
 fi
 
-# Generate a secure password if requested
+# Generate a secure credential if requested
 if $GENERATE; then
-  VALUE=$(op generate-password --letters --digits --symbols --length "$GENERATE_LENGTH" 2>/dev/null || \
-    openssl rand -base64 "$GENERATE_LENGTH" | tr -d '=+/' | head -c "$GENERATE_LENGTH")
+  VALUE=$(openssl rand -base64 "$GENERATE_LENGTH" | tr -d '=+/' | head -c "$GENERATE_LENGTH")
   echo "🔐 Generated secure credential ($GENERATE_LENGTH chars)"
 fi
 

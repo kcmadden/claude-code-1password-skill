@@ -38,8 +38,11 @@ op item create --category API_CREDENTIAL --title "My MCP Server" \
 ANTHROPIC_API_KEY=op://Dev/Anthropic/api_key
 OPENAI_API_KEY=op://Dev/OpenAI/api_key
 
-# Load before starting Claude Code
-source <(op run --env-file=.env.tpl -- env)
+# ✅ Wrap claude with op run — secrets injected into subprocess only
+op run --env-file=.env.tpl -- claude
+
+# ✅ Or export individually for interactive shell use
+export ANTHROPIC_API_KEY=$(op read "op://Dev/Anthropic/api_key")
 claude
 ```
 
@@ -49,7 +52,7 @@ claude
 ## Secrets Setup
 Secrets are managed via 1Password. Run before working:
 ```bash
-source <(op run --env-file=.env.tpl -- env)
+op run --env-file=.env.tpl -- claude
 ```
 Do NOT commit `.env` — commit `.env.tpl` only.
 ```

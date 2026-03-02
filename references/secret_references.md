@@ -43,14 +43,20 @@ NOTION_TOKEN=op://Dev/Notion/api_token
 
 Then inject at runtime:
 ```bash
-# Run a command with secrets resolved
+# ✅ RECOMMENDED — run your command with secrets injected into subprocess only
 op run --env-file=.env.tpl -- npm start
+op run --env-file=.env.tpl -- node server.js
+op run --env-file=.env.tpl -- docker compose up
 
-# Export to current shell
-source <(op run --env-file=.env.tpl -- env | grep -E "ANTHROPIC|N8N|SUPABASE")
+# ✅ OK — read a single secret into a variable for immediate use
+export ANTHROPIC_API_KEY=$(op read "op://Dev/Anthropic/api_key")
 
-# Write resolved .env (don't commit this)
-op run --env-file=.env.tpl -- env | grep -E "^(ANTHROPIC|N8N|SUPABASE)" > .env
+# ⚠️  AVOID — sourcing op run output exposes secrets in current shell
+# and is unsafe if any secret value contains shell metacharacters like $(...):
+# source <(op run --env-file=.env.tpl -- env)   ← DON'T DO THIS
+
+# ⚠️  AVOID — writing resolved secrets to disk (don't commit .env)
+# op run --env-file=.env.tpl -- env > .env       ← only if truly necessary
 ```
 
 ## In Config Files

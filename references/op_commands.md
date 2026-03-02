@@ -73,20 +73,35 @@ op vault get "Vault Name"
 ## Secrets Injection
 
 ```bash
-# Run command with secrets from .env template
+# Run command with secrets from .env template (RECOMMENDED)
 op run --env-file=.env.tpl -- your-command arg1 arg2
 
-# Inject into shell (current session)
-source <(op run --env-file=.env.tpl -- env)
-
-# Generate password
-op generate-password --letters --digits --symbols --length 32
-
 # Inject into Docker
-op run -- docker compose up
+op run --env-file=.env.tpl -- docker compose up
 
-# Inject into specific env vars
-op run --env API_KEY="op://Dev/MyApp/api_key" -- node app.js
+# Inject a single reference via env var (op run picks up op:// values automatically)
+export API_KEY="op://Dev/MyApp/api_key"
+op run -- node app.js   # API_KEY is resolved at runtime
+
+# ⚠️  AVOID: sourcing op run output into the current shell
+# source <(op run --env-file=.env.tpl -- env)   ← UNSAFE
+# If secret values contain $(...) or backticks, they execute as shell code.
+# Use 'op run -- your-command' instead (secrets stay in subprocess only).
+```
+
+## Password Generation
+
+```bash
+# Generate at item creation time (no standalone command)
+op item create --category PASSWORD --title "Generated Secret" \
+  --generate-password='letters,digits,symbols,32'
+
+# Generate with custom recipe
+op item create --category LOGIN --title "My Login" \
+  --generate-password='letters,digits,20'
+
+# Or use openssl for scripted generation
+openssl rand -base64 32 | tr -d '=+/'
 ```
 
 ## Document / File Management
@@ -127,16 +142,13 @@ op item get "Item Title"
 
 ## Output Formats
 
+Valid values: `json` or `human-readable` (default).
+
 ```bash
-# JSON (for scripting)
-op item list --format=json
-op item get "Item" --format=json
-
-# Table (default, human-readable)
-op item list
-
-# Pretty (colored, human-readable detail)
-op item get "Item" --format=pretty
+op item list --format=json           # Machine-readable JSON
+op item get "Item" --format=json     # Full item JSON
+op item list                         # Human-readable (default)
+op vault list --format=json          # Vaults as JSON
 ```
 
 ## Useful Patterns

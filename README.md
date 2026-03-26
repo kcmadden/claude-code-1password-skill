@@ -18,15 +18,20 @@ Stop hardcoding API keys. Stop copying secrets from browser to terminal. Let 1Pa
 
 ## Install
 
-1. Download [`1password.skill`](https://github.com/kcmadden/claude-code-1password-skill/releases/latest)
-2. Drop it in `~/.claude/skills/`
+Clone into your Claude Code skills directory:
 
 ```bash
-curl -L https://github.com/kcmadden/claude-code-1password-skill/releases/latest/download/1password.skill \
-  -o ~/.claude/skills/1password.skill
+git clone https://github.com/kcmadden/claude-code-1password-skill.git \
+  ~/.claude/skills/1password
 ```
 
-3. Restart Claude Code (or start a new session)
+Or if you already have it, pull the latest:
+
+```bash
+cd ~/.claude/skills/1password && git pull
+```
+
+Then restart Claude Code (or start a new session).
 
 **Requirements:**
 - [1Password CLI](https://developer.1password.com/docs/cli/get-started/) v2+ (`op`)

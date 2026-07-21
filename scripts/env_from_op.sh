@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# env_from_op.sh — Generate a .env file from 1Password items
+# env_from_op.sh - Generate a .env file from 1Password items
 #
 # Usage:
 #   bash env_from_op.sh                        # Interactive: prompts for vault + items
@@ -34,7 +34,7 @@ done
 
 # Check op is available
 if ! command -v op &>/dev/null; then
-  echo "❌ 1Password CLI (op) not found. Install: https://developer.1password.com/docs/cli/get-started/"
+  echo "FAIL 1Password CLI (op) not found. Install: https://developer.1password.com/docs/cli/get-started/"
   exit 1
 fi
 
@@ -100,9 +100,9 @@ print('\n'.join(lines))
 PYEOF
 )
 
-# Handle resolve flag — replace refs with real values
+# Handle resolve flag - replace refs with real values
 if $RESOLVE; then
-  echo "⚠️  Writing resolved values (actual secrets). Handle carefully."
+  echo "WARNING: Writing resolved values (actual secrets). Handle carefully."
   FINAL_CONTENT=""
   while IFS= read -r line; do
     if [[ "$line" =~ ^([A-Z_]+)=(op://.+)$ ]]; then
@@ -121,7 +121,7 @@ fi
 HEADER="# Generated from 1Password: ${VAULT_NAME}/${ITEM_TITLE}
 # Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
 # Load with: op run --env-file=.env -- <command>
-#            or: eval \$(op run --env-file=.env -- env | grep KEY)
+#
 
 "
 
@@ -134,9 +134,8 @@ if $DRY_RUN; then
   echo "--- end ---"
 else
   echo "$FULL_CONTENT" > "$OUTPUT"
-  echo "✅ Written to $OUTPUT (${#ENV_CONTENT} chars, $(echo "$ENV_CONTENT" | grep -c '=' || true) vars)"
+  echo "OK   Written to $OUTPUT (${#ENV_CONTENT} chars, $(echo "$ENV_CONTENT" | grep -c '=' || true) vars)"
   echo ""
   echo "To use:"
   echo "  op run --env-file=$OUTPUT -- your-command"
-  echo "  source <(op run --env-file=$OUTPUT -- env)"
 fi

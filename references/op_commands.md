@@ -15,7 +15,7 @@ op whoami
 # List accounts
 op account list
 
-# Service account (CI/CD — set env var, no signin needed)
+# Service account (CI/CD - set env var, no signin needed)
 export OP_SERVICE_ACCOUNT_TOKEN="your-token"
 ```
 
@@ -83,8 +83,8 @@ op run --env-file=.env.tpl -- docker compose up
 export API_KEY="op://Dev/MyApp/api_key"
 op run -- node app.js   # API_KEY is resolved at runtime
 
-# ⚠️  AVOID: sourcing op run output into the current shell
-# source <(op run --env-file=.env.tpl -- env)   ← UNSAFE
+# AVOID: sourcing op run output into the current shell
+# source <(op run --env-file=.env.tpl -- env)   <- UNSAFE
 # If secret values contain $(...) or backticks, they execute as shell code.
 # Use 'op run -- your-command' instead (secrets stay in subprocess only).
 ```
@@ -120,11 +120,11 @@ op document list
 ## Service Accounts (CI/CD)
 
 ```bash
-# Create service account (in 1Password UI: Settings → Developer → Service Accounts)
+# Create service account (in 1Password UI: Settings -> Developer -> Service Accounts)
 # Then set token as env var:
 export OP_SERVICE_ACCOUNT_TOKEN="ops_eyJ..."
 
-# No signin needed — op commands work automatically
+# No signin needed - op commands work automatically
 op item list  # works with service account token
 op read "op://vault/item/field"
 ```

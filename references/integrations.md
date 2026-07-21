@@ -34,14 +34,14 @@ op item create --category API_CREDENTIAL --title "My MCP Server" \
 ### Claude Code Shell Environment
 
 ```bash
-# .env.tpl (safe to commit — no real secrets)
+# .env.tpl (safe to commit - no real secrets)
 ANTHROPIC_API_KEY=op://Dev/Anthropic/api_key
 OPENAI_API_KEY=op://Dev/OpenAI/api_key
 
-# ✅ Wrap claude with op run — secrets injected into subprocess only
+# Wrap claude with op run - secrets injected into subprocess only
 op run --env-file=.env.tpl -- claude
 
-# ✅ Or export individually for interactive shell use
+# Or export individually for interactive shell use
 export ANTHROPIC_API_KEY=$(op read "op://Dev/Anthropic/api_key")
 claude
 ```
@@ -54,7 +54,7 @@ Secrets are managed via 1Password. Run before working:
 ```bash
 op run --env-file=.env.tpl -- claude
 ```
-Do NOT commit `.env` — commit `.env.tpl` only.
+Do NOT commit `.env` - commit `.env.tpl` only.
 ```
 
 ## n8n
@@ -165,11 +165,11 @@ jobs:
 
 ```bash
 # ~/.zshrc
-# Auto-load common dev secrets on shell start (optional — only if you trust your machine)
+# Auto-load common dev secrets on shell start (optional - only if you trust your machine)
 load_dev_secrets() {
   if command -v op &>/dev/null && op whoami &>/dev/null 2>&1; then
     source <(op run --env-file=~/.config/dev.env.tpl -- env 2>/dev/null) && \
-      echo "✅ Dev secrets loaded from 1Password"
+      echo "Dev secrets loaded from 1Password"
   fi
 }
 
@@ -199,7 +199,7 @@ Replit has its own Secrets manager, but for local dev before deploying:
 ```bash
 # Generate a .env from 1Password, then paste values into Replit Secrets UI
 op run --env-file=.env.tpl -- env | grep -E "^(ANTHROPIC|SUPABASE|N8N)"
-# Copy output values → paste into Replit Secrets one by one
+# Copy output values -> paste into Replit Secrets one by one
 ```
 
 ## Rotation Workflow

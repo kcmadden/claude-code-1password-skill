@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# store-mcp-credentials.sh — Store MCP server credentials in 1Password
+# store-mcp-credentials.sh - Store MCP server credentials in 1Password
 #
-# ⚠️  RUN THIS IN TERMINAL.APP — NOT IN CLAUDE CODE
+# WARNING: RUN THIS IN TERMINAL.APP - NOT IN CLAUDE CODE
 #     Claude Code can see everything typed in its terminal.
 #     Open Terminal.app separately, then run this script.
 #
@@ -45,10 +45,10 @@ if [[ -z "$ITEM" ]]; then
 fi
 
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "----------------------------------------"
 echo "  Storing: $ITEM"
 echo "  Vault:   $VAULT"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "----------------------------------------"
 echo ""
 
 # Show pre-filled fields
@@ -90,14 +90,14 @@ echo "Saving to 1Password..."
 if $UPDATE; then
   op item edit "$ITEM" --vault "$VAULT" "${ALL_FIELDS[@]}"
   echo ""
-  echo "✅ Updated '$ITEM' in vault '$VAULT'"
+  echo "OK   Updated '$ITEM' in vault '$VAULT'"
 else
   # Try create, fall back to update if already exists
   if op item get "$ITEM" --vault "$VAULT" &>/dev/null 2>&1; then
-    echo "  Item already exists — updating instead..."
+    echo "  Item already exists - updating instead..."
     op item edit "$ITEM" --vault "$VAULT" "${ALL_FIELDS[@]}"
     echo ""
-    echo "✅ Updated '$ITEM' in vault '$VAULT'"
+    echo "OK   Updated '$ITEM' in vault '$VAULT'"
   else
     op item create \
       --category API_CREDENTIAL \
@@ -105,7 +105,7 @@ else
       --vault "$VAULT" \
       "${ALL_FIELDS[@]}"
     echo ""
-    echo "✅ Created '$ITEM' in vault '$VAULT'"
+    echo "OK   Created '$ITEM' in vault '$VAULT'"
   fi
 fi
 
@@ -119,6 +119,6 @@ for field in "${SECRET_FIELDS[@]}"; do
   echo "  op://${VAULT}/${ITEM}/${field}"
 done
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "----------------------------------------"
 echo "  Done. You can close this terminal."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "----------------------------------------"

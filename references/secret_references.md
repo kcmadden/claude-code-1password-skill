@@ -1,6 +1,6 @@
 # 1Password Secret References
 
-Secret references are the safest way to use secrets — they point to 1Password without exposing actual values in code or config files.
+Secret references are the safest way to use secrets - they point to 1Password without exposing actual values in code or config files.
 
 ## Syntax
 
@@ -33,14 +33,14 @@ op run --env-file=.env.tpl -- your-command
 
 Store references in a `.env.tpl` file (safe to commit to **private** repos):
 
-> **Privacy note:** `.env.tpl` contains your vault names, item names, and field names —
+> **Privacy note:** `.env.tpl` contains your vault names, item names, and field names -
 > e.g. `op://Dev/Anthropic/api_key`. This reveals the structure of your 1Password vault
 > to anyone who can read the file. For **private repos**, this is fine. For **public repos**,
 > consider whether your vault/item naming reveals anything sensitive (client names, internal
-> service names, etc.). Real secret values are never exposed — only the structure.
+> service names, etc.). Real secret values are never exposed - only the structure.
 
 ```bash
-# .env.tpl — commit this
+# .env.tpl - commit this
 ANTHROPIC_API_KEY=op://Dev/Anthropic/api_key
 N8N_API_KEY=op://Dev/n8n/api_key
 SUPABASE_SERVICE_KEY=op://Dev/Supabase/service_key
@@ -49,20 +49,20 @@ NOTION_TOKEN=op://Dev/Notion/api_token
 
 Then inject at runtime:
 ```bash
-# ✅ RECOMMENDED — run your command with secrets injected into subprocess only
+# RECOMMENDED - run your command with secrets injected into subprocess only
 op run --env-file=.env.tpl -- npm start
 op run --env-file=.env.tpl -- node server.js
 op run --env-file=.env.tpl -- docker compose up
 
-# ✅ OK — read a single secret into a variable for immediate use
+# OK - read a single secret into a variable for immediate use
 export ANTHROPIC_API_KEY=$(op read "op://Dev/Anthropic/api_key")
 
-# ⚠️  AVOID — sourcing op run output exposes secrets in current shell
+# AVOID - sourcing op run output exposes secrets in current shell
 # and is unsafe if any secret value contains shell metacharacters like $(...):
-# source <(op run --env-file=.env.tpl -- env)   ← DON'T DO THIS
+# source <(op run --env-file=.env.tpl -- env)   <- DON'T DO THIS
 
-# ⚠️  AVOID — writing resolved secrets to disk (don't commit .env)
-# op run --env-file=.env.tpl -- env > .env       ← only if truly necessary
+# AVOID - writing resolved secrets to disk (don't commit .env)
+# op run --env-file=.env.tpl -- env > .env       <- only if truly necessary
 ```
 
 ## In Config Files

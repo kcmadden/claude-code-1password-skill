@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# store_secret.sh — Store or update a secret in 1Password
+# store_secret.sh - Store or update a secret in 1Password
 #
 # Usage:
 #   bash store_secret.sh --title "My API Key" --field "api_key" --value "sk-..."
@@ -43,7 +43,7 @@ fi
 if [[ -n "$FROM_ENV" ]]; then
   VALUE="${!FROM_ENV:-}"
   if [[ -z "$VALUE" ]]; then
-    echo "❌ Environment variable $FROM_ENV is not set or empty"
+    echo "FAIL Environment variable $FROM_ENV is not set or empty"
     exit 1
   fi
   FIELD="${FROM_ENV}"
@@ -53,7 +53,7 @@ fi
 # Generate a secure credential if requested
 if $GENERATE; then
   VALUE=$(openssl rand -base64 "$GENERATE_LENGTH" | tr -d '=+/' | head -c "$GENERATE_LENGTH")
-  echo "🔐 Generated secure credential ($GENERATE_LENGTH chars)"
+  echo "Generated secure credential ($GENERATE_LENGTH chars)"
 fi
 
 # Prompt for value if still empty
@@ -68,7 +68,7 @@ VAULT_FLAG=""
 if $UPDATE; then
   echo "Updating '${FIELD}' in '${TITLE}'..."
   op item edit "$TITLE" $VAULT_FLAG "${FIELD}[password]=${VALUE}"
-  echo "✅ Updated '${FIELD}' in '${TITLE}'"
+  echo "OK   Updated '${FIELD}' in '${TITLE}'"
 else
   echo "Creating '${TITLE}' in 1Password..."
   RESULT=$(op item create \
@@ -81,7 +81,7 @@ else
   ITEM_ID=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
   VAULT_NAME=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['vault']['name'])")
 
-  echo "✅ Created '${TITLE}' (ID: ${ITEM_ID})"
+  echo "OK   Created '${TITLE}' (ID: ${ITEM_ID})"
   echo ""
   echo "Secret reference:"
   echo "  op://${VAULT_NAME}/${TITLE}/${FIELD}"

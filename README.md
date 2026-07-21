@@ -9,7 +9,7 @@ Stop hardcoding API keys. Stop copying secrets from browser to terminal. Let 1Pa
 ## What it does
 
 - **Store** API keys, tokens, and credentials in 1Password from the Claude Code chat
-- **Read** secrets via `op://` references — secrets never touch disk or shell history
+- **Read** secrets via `op://` references - secrets never touch disk or shell history
 - **Generate** `.env.tpl` files with secret references (safe to commit) from any 1Password item
 - **Rotate** credentials in one command, then re-inject everywhere
 - **Integrate** with Claude Desktop, n8n, Docker, GitHub Actions, Python, Supabase, and Replit
@@ -34,6 +34,7 @@ cd ~/.claude/skills/1password && git pull
 Then restart Claude Code (or start a new session).
 
 **Requirements:**
+- Platform: macOS (the Terminal-launch secret-entry flow uses AppleScript; the `op` commands are cross-platform)
 - [1Password CLI](https://developer.1password.com/docs/cli/get-started/) v2+ (`op`)
 - Signed in: `op signin`
 
@@ -80,7 +81,7 @@ Once installed, Claude Code automatically loads this skill when you ask about 1P
 ```bash
 # 1. Store your secret
 bash scripts/store_secret.sh --title "Anthropic" --field api_key --value "sk-..."
-# → op://Dev/Anthropic/api_key
+# -> op://Dev/Anthropic/api_key
 
 # 2. Reference it in .env.tpl (commit this)
 echo "ANTHROPIC_API_KEY=op://Dev/Anthropic/api_key" >> .env.tpl
@@ -104,16 +105,16 @@ export KEY=$(op read "op://vault/item/field")   # single secret into variable
 
 **Patterns to avoid:**
 ```bash
-source <(op run --env-file=.env.tpl -- env)    # ⚠️ unsafe — shell metacharacters in values execute as code
-eval $(op run ... env)                          # ⚠️ same risk
+source <(op run --env-file=.env.tpl -- env)    # unsafe - shell metacharacters in values execute as code
+eval $(op run ... env)                          # same risk
 ```
 
 **Rules built into this skill:**
-1. Never hardcode secrets — always use `op://` references
+1. Never hardcode secrets - always use `op://` references
 2. Commit `.env.tpl` (references only), never `.env` (real values)
 3. Always add `.env` to `.gitignore`
 4. Use vaults to scope access by project or team
-5. Use service accounts for CI/CD — never personal tokens in automation
+5. Use service accounts for CI/CD - never personal tokens in automation
 
 ---
 

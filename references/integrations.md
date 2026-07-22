@@ -161,20 +161,27 @@ jobs:
       - run: deploy-script.sh  # ANTHROPIC_API_KEY is available
 ```
 
-## Shell / .zshrc Auto-Load
+## Shell / .zshrc Convenience
+
+Do not source secrets into your interactive shell. Sourcing runs any `$(...)`
+or backticks inside a secret value as code, and the resolved secrets then linger
+in your shell environment and history. Instead, drop into a short-lived subshell
+that has the secrets in its environment and nowhere else.
 
 ```bash
 # ~/.zshrc
-# Auto-load common dev secrets on shell start (optional - only if you trust your machine)
-load_dev_secrets() {
+# Launch a subshell with dev secrets loaded in ITS environment only.
+# Secrets live in that subprocess, never in your interactive shell. Exit to leave them behind.
+dev_shell() {
   if command -v op &>/dev/null && op whoami &>/dev/null 2>&1; then
-    source <(op run --env-file=~/.config/dev.env.tpl -- env 2>/dev/null) && \
-      echo "Dev secrets loaded from 1Password"
+    op run --env-file=~/.config/dev.env.tpl -- "$SHELL"
+  else
+    echo "Sign in first: op signin"
   fi
 }
 
-# Call explicitly when needed:
-alias load-secrets='load_dev_secrets'
+# Type 'devsh' to enter the secrets-loaded subshell:
+alias devsh='dev_shell'
 ```
 
 ## Supabase
@@ -216,7 +223,7 @@ op item edit "Service Name" api_key[password]="$NEW_KEY"
 # 3. Verify
 op read "op://Dev/Service Name/api_key"
 
-# 4. Re-inject wherever used
-source <(op run --env-file=.env.tpl -- env)
-# Or restart services that use the key
+# 4. Re-inject wherever used (run the consumer under op run - no sourcing)
+op run --env-file=.env.tpl -- your-command
+# Or restart services that use the key so they pick up the rotated value
 ```

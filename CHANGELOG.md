@@ -35,6 +35,11 @@ First tagged release. The skill is stable and ready to install into
   `env_from_op.sh` output. Shell metacharacters inside secret values can execute
   as code when sourced; `op run --env-file=... -- <command>` is the safe pattern
   the skill already recommends.
+- Replaced the two remaining live `source <(op run ...)` snippets in
+  `references/integrations.md` (the .zshrc convenience function and the rotation
+  workflow) with the safe forms: a short-lived `op run --env-file=... -- "$SHELL"`
+  subshell, and `op run --env-file=... -- <command>` for re-injection. Only
+  clearly-marked "do not do this" warnings remain.
 
 ### Security
 - Reaffirmed: never source or `eval` resolved secrets into the current shell;

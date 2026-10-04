@@ -207,6 +207,47 @@ Grant vault access only to what the service needs.
 
 ---
 
+## Never Print a Secret
+
+Anything a command prints lands in Claude's context and the session transcript. Load secrets into variables and use them; never print them, or any part of them.
+
+```bash
+# Presence check - prints SET/UNSET, never the value
+[ -n "$API_KEY" ] && echo SET || echo UNSET
+
+# Length only
+echo "${#API_KEY}"
+
+# Compare two secrets without revealing either - short fingerprint
+printf '%s' "$API_KEY" | shasum -a 256 | cut -c1-12
+
+# Use it without printing it; send keys in headers, not URLs
+API_KEY=$(op read -n "op://vault/item/credential")
+curl -s -H "Authorization: Bearer $API_KEY" https://api.example.com/me
+```
+
+Patterns that leak (do not use):
+- `${VAR:+yes}${VAR:-no}` - when VAR is set, the `:-` half prints the full value
+- `${TOKEN:0:8}` or any slice - a partial secret is still a leak
+- `op read ...` or `op item get --reveal` with output going straight to the terminal
+- `https://api.example.com/x?key=$TOKEN` - many client libraries echo the full URL in error messages
+- `env`, `printenv`, `cat .env` - use `env | cut -d= -f1` to list names only
+
+If a secret does get printed: say so immediately and rotate it. It is already in the transcript.
+
+Want this enforced automatically instead of by convention? 1Password Pro adds hooks that block these commands before they run and hide keys that appear in output.
+
+---
+
+## Troubleshooting
+
+- **`op read` value does not match** - `op read` adds a trailing newline. Use `op read -n` when comparing or hashing.
+- **Service account: "item not found"** - service accounts need `--vault <name>` on `op item get` / `op item edit`.
+- **`op` hangs with no output** - it is waiting for a biometric or password prompt it cannot show. Run it in the foreground, never in the background, and update the CLI (`op --version`, then upgrade through your package manager).
+- **Wrong item returned** - titles get renamed and misspelled. Reference items by ID (`op://<vault-id>/<item-id>/<field>`), not title.
+
+---
+
 ## Security Rules
 
 1. **Never hardcode secrets** - always use `op://` references or runtime injection

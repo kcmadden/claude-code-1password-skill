@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.4.0] - 2026-10-04
+
+### Added
+- SKILL.md: "Never Print a Secret" section (safe presence/length/fingerprint checks, leaking patterns to avoid).
+- SKILL.md: Troubleshooting section (op read -n, service account --vault, hangs, reference by ID).
+
 ## [1.3.2] - 2026-10-04
 
 ### Changed

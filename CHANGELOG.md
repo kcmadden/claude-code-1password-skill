@@ -3,6 +3,11 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.2] - 2026-10-04
+
+### Changed
+- README: added a pointer to the 1Password Pro pack.
+
 ## [1.0.0] - 2026-07-21
 
 First tagged release. The skill is stable and ready to install into

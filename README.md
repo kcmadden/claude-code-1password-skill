@@ -38,6 +38,8 @@ Then restart Claude Code (or start a new session).
 - [1Password CLI](https://developer.1password.com/docs/cli/get-started/) v2+ (`op`)
 - Signed in: `op signin`
 
+**Want more?** 1Password Pro adds leak-guard hooks that block commands which would print a secret and hide any key that shows up in Claude's output, a credential registry agent that maps each project's env vars to 1Password items, and one-command clipboard capture. Coming soon to [Agensi](https://www.agensi.io).
+
 ---
 
 ## Usage
